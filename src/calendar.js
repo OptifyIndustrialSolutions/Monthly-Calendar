@@ -1,4 +1,3 @@
-import './style.css';
 import './calendar.css';
 
 function getWeekNumber(date) {
