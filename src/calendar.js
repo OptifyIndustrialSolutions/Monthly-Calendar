@@ -1,5 +1,3 @@
-import './calendar.css';
-
 function getWeekNumber(date) {
   // ISO week number, Monday as first day
   const temp = new Date(date.getTime());
