@@ -23,7 +23,10 @@ function generateCalendar(year, month, showWeek = true) {
   html += '<thead><tr>';
   if (showWeek) html += '<th>Wk</th>';
   const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  for (const d of days) html += `<th>${d}</th>`;
+  for (let i = 0; i < days.length; i++) {
+    const className = i === 6 ? ' class="sunday"' : '';
+    html += `<th${className}>${days[i]}</th>`;
+  }
   html += '</tr></thead><tbody>';
 
   let start = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
@@ -33,10 +36,17 @@ function generateCalendar(year, month, showWeek = true) {
     const weekDate = new Date(year, month, date > 0 ? date : 1);
     if (showWeek) html += `<td class="week-number">${getWeekNumber(weekDate)}</td>`;
     for (let i = 0; i < 7; i++) {
+      const isSunday = i === 6;
+      const className = [];
+      if (isSunday) className.push('sunday');
+      if (date <= 0 || date > lastDay.getDate()) className.push('empty');
+      
+      const classAttr = className.length > 0 ? ` class="${className.join(' ')}"` : '';
+      
       if (date > 0 && date <= lastDay.getDate()) {
-        html += `<td>${date}</td>`;
+        html += `<td${classAttr}>${date}</td>`;
       } else {
-        html += '<td class="empty"></td>';
+        html += `<td${classAttr}></td>`;
       }
       date++;
     }
@@ -73,7 +83,8 @@ function renderApp() {
     const m = parseInt(document.getElementById('month-select').value, 10);
     const monthName = new Date(0, m).toLocaleString('default', { month: 'long' });
     document.getElementById('calendar-title').textContent = `${monthName} ${y}`;
-    document.getElementById('calendar-container').innerHTML = generateCalendar(y, m, true);
+    // Don't show week numbers (false parameter)
+    document.getElementById('calendar-container').innerHTML = generateCalendar(y, m, false);
   }
 
   document.getElementById('month-select').addEventListener('change', updateCalendar);
